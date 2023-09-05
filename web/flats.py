@@ -9,7 +9,7 @@ def get_flats_from_db():
     # alchemyEngine = create_engine('postgresql+psycopg2://docker:Welcome123@127.0.0.1:5432/DBFlats')
     dbConnection = alchemyEngine.connect()
 
-    dataFrame = pds.read_sql("select * from flats", dbConnection)
+    dataFrame = pds.read_sql("select * from flats limit 500", dbConnection)
 
     dbConnection.close()
 

@@ -26,29 +26,24 @@ class SrealityScrapperPipeline:
 
     def process_item(self, item, spider):
 
-        ## Check to see if text is already in database
-        # for url in item["imageurl"]:
+        # Check to see if text is already in database
 
-            # self.cur.execute("select * from public.flats where imageurl = %s", (url,))
-            # result = self.cur.fetchone()
+        self.cur.execute("select * from public.flats where imageurl = %s and title = %s", (item["imageurl"], item["title"]))
+        result = self.cur.fetchone()
 
-            ## If it is in DB, create log message
-            # if result:
-            #     spider.logger.warn("Item already in database: %s" % item["imageurl"])
-            #     continue
+        # If it is in DB, create log message
+        if result:
+            spider.logger.warn("Item already in database: %s" % item["imageurl"])
 
+        # If text isn't in the DB, insert data
+        else:
+            ## Define insert statement
+            self.cur.execute("""insert into public.flats (title, imageurl) values (%s,%s)""", (
+            item["title"],
+            item["imageurl"]
+            ))
+            self.connection.commit()
 
-            ## If text isn't in the DB, insert data
-            # else:
-
-                ## Define insert statement
-        self.cur.execute(""" insert into public.flats (title, imageurl) values (%s,%s)""", (
-        item["title"],
-        item["imageurl"]
-        ))
-
-                ## Execute insert of data into database
-        self.connection.commit()
         return item
 
 
