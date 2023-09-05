@@ -1,5 +1,4 @@
 FROM python:3.11.2
-ADD index.html index.html
 ADD server.py server.py
 ADD flats.py flats.py
 ADD requirements.txt requirements.txt

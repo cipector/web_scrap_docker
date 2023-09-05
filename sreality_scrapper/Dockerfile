@@ -1,33 +1,10 @@
-#FROM python:3.11.2
-FROM selenium/standalone-chrome
 FROM python:3.11.2
-# Adding trusting keys to apt for repositories
-#RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-#
-## Adding Google Chrome to the repositories
-#RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-#
-## Updating apt to see and install Google Chrome
-#RUN apt-get -y update
-#
-## Magic happens
-#RUN apt-get install -y google-chrome-stable
-## Installing Unzip
-#RUN apt-get install -yqq unzip
-#
-## Download the Chrome Driver
-##RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/
-##RUN curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE/chromedriver_linux64.zip
-##
-### Unzip the Chrome Driver into /usr/local/bin directory
-##RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
-#RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
-#RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
-
-# Set display port as an environment variable
-#ENV DISPLAY=:99
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
+RUN apt update -y
+RUN apt install -y gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 libfontconfig1 libgdk-pixbuf2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libxss1 fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils
+RUN apt install -y google-chrome-stable
 ADD . .
 RUN pip install --upgrade pip
-RUN #pip install webdriver-manager
 RUN pip install  -r requirements.txt
 CMD ["python", "crawl_flats.py"]

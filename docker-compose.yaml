@@ -12,35 +12,25 @@ services:
     volumes:
     - .\db\1_newtableflats.sql:/docker-entrypoint-initdb.d/1_newtableflats.sql
     - .\db\2_insert.sql:/docker-entrypoint-initdb.d/2_insert.sql
-#    networks:
-#      - db_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U docker -d DBFlats" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
   vz-httpserver:
     build: .\web\
     ports:
       - "8080:80"
     depends_on:
-      - vz-db
-#    networks:
-#      - db_network
+      vz-db:
+        condition: service_healthy
 
-#  adminer:
-#    image: adminer
-#    restart: always
-#    depends_on:
-#      - database
-#    ports:
-#      - 8081:8080
 
   scraper:
     build: .\sreality_scrapper\
 #    restart: always
     depends_on:
-      - vz-httpserver
-#    ports:
-#      - "5432:5432"
-
-#networks:
-#  db_network:
-##    external: true
-#    name: db_network
+      vz-db:
+        condition: service_healthy
